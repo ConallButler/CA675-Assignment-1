@@ -1,0 +1,5 @@
+select top 50000 * from posts where posts.ViewCount >14000 ORDER BY posts.ViewCount;
+select top 50000 * from posts where posts.ViewCount<140001 and posts.ViewCount >80000 ORDER BY posts.ViewCount;
+select top 50000 * from posts where posts.ViewCount<80001 and posts.ViewCount >58000 ORDER BY posts.ViewCount;
+select top 50000 * from posts where posts.ViewCount<58001 and posts.ViewCount >45000 ORDER BY posts.ViewCount;
+select top 18724 * from posts where posts.ViewCount<45001 and posts.ViewCount >41000 ORDER BY posts.ViewCount DESC;
