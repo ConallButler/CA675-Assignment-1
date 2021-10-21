@@ -1,0 +1,4 @@
+hadoop fs -mkdir -p CSVs
+hadoop fs -put /usr/local/MCM/CA675/CA675-Assignment-1
+
+hadoop fs -ls CSVs
