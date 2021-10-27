@@ -1,0 +1,141 @@
+conall@conall-NS14A8:/$ pig
+2021-10-26 13:24:39,001 INFO pig.ExecTypeProvider: Trying ExecType : LOCAL
+2021-10-26 13:24:39,003 INFO pig.ExecTypeProvider: Trying ExecType : MAPREDUCE
+2021-10-26 13:24:39,003 INFO pig.ExecTypeProvider: Picked MAPREDUCE as the ExecType
+2021-10-26 13:24:39,043 WARN pig.Main: Cannot write to log file: //pig_1635251079043.log
+2021-10-26 13:24:39,048 [main] INFO  org.apache.pig.Main - Apache Pig version 0.17.0 (r1797386) compiled Jun 02 2017, 15:41:58
+2021-10-26 13:24:39,065 [main] INFO  org.apache.pig.impl.util.Utils - Default bootup file /home/conall/.pigbootup not found
+2021-10-26 13:24:39,294 [main] WARN  org.apache.hadoop.util.NativeCodeLoader - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2021-10-26 13:24:39,310 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+2021-10-26 13:24:39,310 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to hadoop file system at: hdfs://localhost:9000
+2021-10-26 13:24:39,729 [main] INFO  org.apache.pig.PigServer - Pig Script ID for the session: PIG-default-21493cf3-9092-410a-a18c-a064af9ffc72
+2021-10-26 13:24:39,729 [main] WARN  org.apache.pig.PigServer - ATS is disabled since yarn.timeline-service.enabled set to false
+grunt> register /usr/local/Pig/pig-0.17.0/contrib/piggybank/java/piggybank.jar
+grunt> 
+grunt> Query1 = LOAD 'CA675-Assignment-1/csvs/query1.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+grunt> Query2 = LOAD 'CA675-Assignment-1/csvs/query2.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+grunt> Query3 = LOAD 'CA675-Assignment-1/csvs/query3.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+grunt> Query4 = LOAD 'CA675-Assignment-1/csvs/query4.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+grunt> Query5 = LOAD 'CA675-Assignment-1/csvs/query5.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+grunt> Queries = UNION Query1, Query2, Query3, Query4, Query5;
+grunt> Queries_Filtered_Cleaned1 = FOREACH Queries GENERATE Id, Score, OwnerUserId, Title, REPLACE(Body,'\n', '') AS Body;
+grunt> Queries_Filtered_Cleaned2 = FOREACH Queries_Filtered_Cleaned1 GENERATE Id, Score, OwnerUserId, Title, REPLACE(Body,'<.*?.>', '') AS Body;
+grunt> STORE Queries_Filtered_Cleaned2 INTO 'CA675-Assignment-1/csvs/Queries_Filtered_Cleaned' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',' ,'NO_MULTILINE' ,'UNIX', 'SKIP_OUTPUT_HEADER');
+2021-10-26 13:24:43,577 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.textoutputformat.separator is deprecated. Instead, use mapreduce.output.textoutputformat.separator
+2021-10-26 13:24:43,594 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig features used in the script: UNION
+2021-10-26 13:24:43,614 [main] INFO  org.apache.pig.data.SchemaTupleBackend - Key [pig.schematuple] was not set... will not generate code.
+2021-10-26 13:24:43,634 [main] INFO  org.apache.pig.newplan.logical.optimizer.LogicalPlanOptimizer - {RULES_ENABLED=[AddForEach, ColumnMapKeyPrune, ConstantCalculator, GroupByConstParallelSetter, LimitOptimizer, LoadTypeCastInserter, MergeFilter, MergeForEach, NestedLimitOptimizer, PartitionFilterOptimizer, PredicatePushdownOptimizer, PushDownForEachFlatten, PushUpFilter, SplitFilter, StreamTypeCastInserter]}
+2021-10-26 13:24:43,669 [main] INFO  org.apache.pig.newplan.logical.rules.ColumnPruneVisitor - Columns pruned for Query1: $1, $2, $3, $4, $5, $7, $10, $11, $12, $13, $14, $16, $17, $18, $19, $20, $21, $22
+2021-10-26 13:24:43,670 [main] INFO  org.apache.pig.newplan.logical.rules.ColumnPruneVisitor - Columns pruned for Query2: $1, $2, $3, $4, $5, $7, $10, $11, $12, $13, $14, $16, $17, $18, $19, $20, $21, $22
+2021-10-26 13:24:43,671 [main] INFO  org.apache.pig.newplan.logical.rules.ColumnPruneVisitor - Columns pruned for Query3: $1, $2, $3, $4, $5, $7, $10, $11, $12, $13, $14, $16, $17, $18, $19, $20, $21, $22
+2021-10-26 13:24:43,671 [main] INFO  org.apache.pig.newplan.logical.rules.ColumnPruneVisitor - Columns pruned for Query4: $1, $2, $3, $4, $5, $7, $10, $11, $12, $13, $14, $16, $17, $18, $19, $20, $21, $22
+2021-10-26 13:24:43,671 [main] INFO  org.apache.pig.newplan.logical.rules.ColumnPruneVisitor - Columns pruned for Query5: $1, $2, $3, $4, $5, $7, $10, $11, $12, $13, $14, $16, $17, $18, $19, $20, $21, $22
+2021-10-26 13:24:43,703 [main] INFO  org.apache.pig.impl.util.SpillableMemoryManager - Selected heap (PS Old Gen) of size 699400192 to monitor. collectionUsageThreshold = 489580128, usageThreshold = 489580128
+2021-10-26 13:24:43,754 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MRCompiler - File concatenation threshold: 100 optimistic? false
+2021-10-26 13:24:43,780 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size before optimization: 1
+2021-10-26 13:24:43,780 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size after optimization: 1
+2021-10-26 13:24:43,847 [main] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:24:44,053 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2021-10-26 13:24:44,066 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.MRScriptState - Pig script settings are added to the job
+2021-10-26 13:24:44,074 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.reduce.markreset.buffer.percent is deprecated. Instead, use mapreduce.reduce.markreset.buffer.percent
+2021-10-26 13:24:44,074 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2021-10-26 13:24:44,077 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.output.compress is deprecated. Instead, use mapreduce.output.fileoutputformat.compress
+2021-10-26 13:24:44,080 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - This job cannot be converted run in-process
+2021-10-26 13:24:44,093 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.submit.replication is deprecated. Instead, use mapreduce.client.submit.file.replication
+2021-10-26 13:24:44,280 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/Pig/pig-0.17.0/contrib/piggybank/java/piggybank.jar to DistributedCache through /tmp/temp247235506/tmp841639309/piggybank.jar
+2021-10-26 13:24:44,332 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/Pig/pig-0.17.0/pig-0.17.0-core-h2.jar to DistributedCache through /tmp/temp247235506/tmp-770128863/pig-0.17.0-core-h2.jar
+2021-10-26 13:24:44,354 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/Pig/pig-0.17.0/lib/automaton-1.11-8.jar to DistributedCache through /tmp/temp247235506/tmp2084060634/automaton-1.11-8.jar
+2021-10-26 13:24:44,375 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/Pig/pig-0.17.0/lib/antlr-runtime-3.4.jar to DistributedCache through /tmp/temp247235506/tmp-710964968/antlr-runtime-3.4.jar
+2021-10-26 13:24:44,399 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/Pig/pig-0.17.0/lib/joda-time-2.9.3.jar to DistributedCache through /tmp/temp247235506/tmp2067915937/joda-time-2.9.3.jar
+2021-10-26 13:24:44,414 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2021-10-26 13:24:44,422 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+2021-10-26 13:24:44,422 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cacche
+2021-10-26 13:24:44,422 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Setting key [pig.schematuple.classes] with classes to deserialize []
+2021-10-26 13:24:44,470 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2021-10-26 13:24:44,476 [JobControl] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:24:44,495 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.task.id is deprecated. Instead, use mapreduce.task.attempt.id
+2021-10-26 13:24:44,754 [JobControl] INFO  org.apache.hadoop.mapreduce.JobResourceUploader - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/conall/.staging/job_1635188457710_0032
+2021-10-26 13:24:44,769 [JobControl] WARN  org.apache.hadoop.mapreduce.JobResourceUploader - No job jar file set.  User classes may not be found. See Job or Job#setJar(String).
+2021-10-26 13:24:44,799 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2021-10-26 13:24:44,799 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2021-10-26 13:24:44,820 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2021-10-26 13:24:44,826 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2021-10-26 13:24:44,826 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2021-10-26 13:24:44,828 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2021-10-26 13:24:44,833 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2021-10-26 13:24:44,833 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2021-10-26 13:24:44,835 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2021-10-26 13:24:44,839 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2021-10-26 13:24:44,839 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2021-10-26 13:24:44,840 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2021-10-26 13:24:44,844 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2021-10-26 13:24:44,844 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2021-10-26 13:24:44,846 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2021-10-26 13:24:44,902 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - number of splits:5
+2021-10-26 13:24:44,936 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2021-10-26 13:24:45,043 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Submitting tokens for job: job_1635188457710_0032
+2021-10-26 13:24:45,046 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Executing with tokens: []
+2021-10-26 13:24:45,166 [JobControl] INFO  org.apache.hadoop.mapred.YARNRunner - Job jar is not present. Not adding any jar to the list of resources.
+2021-10-26 13:24:45,222 [JobControl] INFO  org.apache.hadoop.conf.Configuration - resource-types.xml not found
+2021-10-26 13:24:45,222 [JobControl] INFO  org.apache.hadoop.yarn.util.resource.ResourceUtils - Unable to find 'resource-types.xml'.
+2021-10-26 13:24:45,293 [JobControl] INFO  org.apache.hadoop.yarn.client.api.impl.YarnClientImpl - Submitted application application_1635188457710_0032
+2021-10-26 13:24:45,328 [JobControl] INFO  org.apache.hadoop.mapreduce.Job - The url to track the job: http://conall-NS14A8:8088/proxy/application_1635188457710_0032/
+2021-10-26 13:24:45,329 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_1635188457710_0032
+2021-10-26 13:24:45,329 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases Queries,Queries_Filtered_Cleaned1,Queries_Filtered_Cleaned2,Query1,Query2,Query3,Query4,Query5
+2021-10-26 13:24:45,329 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: Query4[4,9],Query4[-1,-1],Queries[6,10],Queries_Filtered_Cleaned1[7,28],Queries_Filtered_Cleaned2[8,28],Query3[3,9],Query3[-1,-1],Query5[5,9],Query5[-1,-1],Query2[2,9],Query2[-1,-1],Query1[1,9],Query1[-1,-1] C:  R: 
+2021-10-26 13:24:45,339 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 0% complete
+2021-10-26 13:24:45,339 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1635188457710_0032]
+2021-10-26 13:25:09,445 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 26% complete
+2021-10-26 13:25:09,445 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1635188457710_0032]
+2021-10-26 13:25:17,457 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 39% complete
+2021-10-26 13:25:17,457 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1635188457710_0032]
+2021-10-26 13:25:22,464 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 47% complete
+2021-10-26 13:25:22,464 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1635188457710_0032]
+2021-10-26 13:25:30,482 [main] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:25:30,490 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2021-10-26 13:25:30,692 [main] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:25:30,697 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2021-10-26 13:25:30,712 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+2021-10-26 13:25:30,714 [main] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:25:30,719 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2021-10-26 13:25:30,767 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 100% complete
+2021-10-26 13:25:30,770 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.SimplePigStats - Script Statistics: 
+
+HadoopVersion	PigVersion	UserId	StartedAt	FinishedAt	Features
+3.2.2	0.17.0	conall	2021-10-26 13:24:44	2021-10-26 13:25:30	UNION
+
+Success!
+
+Job Stats (time in seconds):
+JobId	Maps	Reduces	MaxMapTime	MinMapTime	AvgMapTime	MedianMapTime	MaxReduceTime	MinReduceTime	AvgReduceTime	MedianReducetime	Alias	Feature	Outputs
+job_1635188457710_0032	5	0	32	17	25	27	0	0	0	0	Queries,Queries_Filtered_Cleaned1,Queries_Filtered_Cleaned2,Query1,Query2,Query3,Query4,Query5	MAP_ONLY	hdfs://localhost:9000/user/conall/CA675-Assignment-1/csvs/Queries_Filtered_Cleaned,
+
+Input(s):
+Successfully read 43818 records from: "hdfs://localhost:9000/user/conall/CA675-Assignment-1/csvs/query3.csv"
+Successfully read 18264 records from: "hdfs://localhost:9000/user/conall/CA675-Assignment-1/csvs/query5.csv"
+Successfully read 46245 records from: "hdfs://localhost:9000/user/conall/CA675-Assignment-1/csvs/query4.csv"
+Successfully read 47897 records from: "hdfs://localhost:9000/user/conall/CA675-Assignment-1/csvs/query2.csv"
+Successfully read 43776 records from: "hdfs://localhost:9000/user/conall/CA675-Assignment-1/csvs/query1.csv"
+
+Output(s):
+Successfully stored 200000 records (187929107 bytes) in: "hdfs://localhost:9000/user/conall/CA675-Assignment-1/csvs/Queries_Filtered_Cleaned"
+
+Counters:
+Total records written : 200000
+Total bytes written : 187929107
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+
+Job DAG:
+job_1635188457710_0032
+
+
+2021-10-26 13:25:30,772 [main] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:25:30,775 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2021-10-26 13:25:30,809 [main] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:25:30,815 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2021-10-26 13:25:30,836 [main] INFO  org.apache.hadoop.yarn.client.RMProxy - Connecting to ResourceManager at /0.0.0.0:8032
+2021-10-26 13:25:30,839 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2021-10-26 13:25:30,863 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!
+
