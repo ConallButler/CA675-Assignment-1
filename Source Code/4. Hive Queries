@@ -1,0 +1,30 @@
+--Show headers for SELECT statements
+set hive.cli.print.header=true;
+
+--Create Database, Create table from cleaned/filtered pig output
+CREATE DATABASE sequeries;
+USE sequeries;
+CREATE EXTERNAL TABLE Queries_Filtered_Cleaned
+(Id int, Score int, OwnerUserId int, Title string, Body string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION 'CA675-Assignment-1/csvs/Queries_Filtered_Cleaned';
+
+--2.2.1. Display Id, Score, Owneruserid and Title for top 10 posts, by score.
+SELECT id,score,owneruserid,title  FROM queries_filtered_cleaned SORT BY Score DESC LIMIT 10;
+
+--2.2.2. Sum score for each distinct user, display top 10 by summed score. Null OwnerUserId values ignored
+SELECT owneruserId, SUM(score) AS totalScore 
+FROM queries_filtered_cleaned
+WHERE owneruserId IS NOT NULL
+GROUP BY owneruserId
+ORDER BY totalScore DESC LIMIT 10;
+
+
+--2.2.3. Count distinct users with “Cloud” or “cloud” in the body of one of their posts.
+
+SELECT COUNT (DISTINCT owneruserid) AS (Users_that_use_the_word_cloud)
+FROM queries_filtered_cleaned
+WHERE body RLIKE '(cloud|Cloud)';
+ 
+

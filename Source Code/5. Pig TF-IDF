@@ -1,0 +1,43 @@
+--All below code below entered into Pig 10 times, filtering by a different of each of the top-10 OwnerUserIds in step A1;87234,4883,9951,6068,89904,51816,49153,179736,95592,63051. 
+
+
+--Load cleaned CSV output by Pig in step 2;
+Queries_Filtered_Cleaned = LOAD 'CA675-Assignment-1/csvs/Queries_Filtered_Cleaned' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',' ,'NO_MULTILINE' ,'UNIX', 'READ_INPUT_HEADER') AS (Id:int, Score:int, OwnerUserId:int, Title:chararray, Body:chararray);
+
+--Load CSV consisting of a single column of common words, common characters, and symbols.
+Top100Words = LOAD 'CA675-Assignment-1/csvs/common_words_and_characters.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',' ,'NO_MULTILINE' ,'UNIX', 'READ_INPUT_HEADER') AS (Term:chararray);
+
+--Source;https://courses.cs.ut.ee/MTAT.08.036/2017_fall/uploads/Main/L4_Pig_2017.pdf
+A1 = FILTER Queries_Filtered_Cleaned BY OwnerUserId == 9951;
+ 
+--separate string into terms, un-nest tokenised terms; A2 consists of (PostId, term) key value pairs
+A2 = FOREACH A1 generate Id, flatten(TOKENIZE((chararray)Body)) as Term;
+B = FOREACH A2 GENERATE Id, LOWER(Body) as Term;
+--C Has schema of (Term,Id) {n(Id,term)}; where n is no of occurences of the term in the corresponding post
+C = group B by (Term, Id);
+--D has schema of (n, Term, Id), where count is no of occurrences of the term in the corresponding post
+D = foreach C generate COUNT(B) as n, group.Term, group.Id;
+
+--E has schema Id((n,term,id)for each term in post)
+E = group D by Id;
+--F has Schema N,n,term,Id, where N is the count of distinct terms in the post
+F = foreach E generate SUM(D.n) as N, flatten(D);
+
+G = group F by Term;
+--H has schema m,N,n,term,Id, where m is the count of posts containing the term
+H = foreach G generate COUNT(F.Id) as m, flatten(F);
+--I and J steps count the total number of posts by the user, Np J Schema: Np,m,N,term,Id
+I = GROUP H ALL;
+J = FOREACH I GENERATE COUNT(H.Id) as Np, flatten(H);
+--TF-IDF calculation
+K = foreach J generate Id, Term, ((1.0*n)/N)*LOG(Np/m) as tfidf;
+
+--Join output of TFIDF script with Top100Words, filter by null to include only results that do not match the most commonly used English words, filter by >=2 to remove single character terms, order by TFIDF
+L = JOIN K by Term LEFT OUTER, Top100Words by Body;
+M = FILTER L BY Top100Words::Body is NULL;
+N = FOREACH M GENERATE K::H::F::D::Term AS Term, K::tfidf AS TFIDF;
+# 'LIMIT 10' can be added To the end of step O for a top 10, all terms left in output for debugging purposes
+O = ORDER N BY TFIDF DESC;
+
+store O into 'CA675-Assignment-1/csvs/tfidf_top10posts_9951';
+

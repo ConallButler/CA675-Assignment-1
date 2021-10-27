@@ -1,0 +1,21 @@
+--Enable piggybank functions
+register /usr/local/Pig/pig-0.17.0/contrib/piggybank/java/piggybank.jar
+
+--Load CSVs, ‘,’ as delimiter, allow line breaks inside fields, windows formatting, do not read header from file. Schema data types provided by stack exchange edited to reflect pig data types.
+Query1 = LOAD 'CA675-Assignment-1/csvs/query1.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+Query2 = LOAD 'CA675-Assignment-1/csvs/query2.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+Query3 = LOAD 'CA675-Assignment-1/csvs/query3.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+Query4 = LOAD 'CA675-Assignment-1/csvs/query4.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+Query5 = LOAD 'CA675-Assignment-1/csvs/query5.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE', 'WINDOWS', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:datetime, DeletionDate:datetime, Score:int, ViewCount:int, Body: chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:datetime, LastActivityDate:datetime, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:datetime, CommunityOwnedDate:datetime, ContentLicense:chararray);
+Queries = UNION Query1, Query2, Query3, Query4, Query5;
+
+--Filter out line breaks in Body field, line breaks in fields difficult to deal with in Hive
+Queries_Filtered_Cleaned1 = FOREACH Queries GENERATE Id, Score, OwnerUserId, Title, REPLACE(Body,'\n', '') AS Body;
+
+--Filter out HTML tags in Body field, TF-IDF can count these so are removed
+Queries_Filtered_Cleaned2 = FOREACH Queries_Filtered_Cleaned1 GENERATE Id, Score, OwnerUserId, Title, REPLACE(Body,'<.*?.>', '') AS Body;
+
+--Store as CSV, no line-breaks in fields, UNIX format, no headers
+--Output schema; (Id int, Score int, OwnerUserId int, Title chararray, Body chararray)
+STORE Queries_Filtered_Cleaned2 INTO 'CA675-Assignment-1/csvs/Queries_Filtered_Cleaned' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',' ,'NO_MULTILINE' ,'UNIX', 'SKIP_OUTPUT_HEADER');
+
