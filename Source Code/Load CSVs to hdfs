@@ -1,5 +1,0 @@
-hadoop fs -mkdir -p CA675-Assignment-1
-hadoop fs -put ~/Desktop/csvs CA675-Assignment-1
-hadoop fs -put ~/Desktop/common_words_and_characters.csv CA675-Assignment-1/csvs
-hadoop fs -ls CA675-Assignment-1/csvs
-
